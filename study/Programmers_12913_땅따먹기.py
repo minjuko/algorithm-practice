@@ -8,5 +8,5 @@ def solution(land):
             # 같은 열을 제외하여 합친 후 최댓값 원소를 찾아 합산
             land[i][j] += max(land[i - 1][:j] + land[i - 1][j + 1:])
 
-    answer = max(land[len(land) - 1])  # 마지막 줄의 최댓값 출력
+    answer = max(land[-1])  # 마지막 줄의 최댓값 출력
     return answer
