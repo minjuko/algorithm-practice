@@ -1,12 +1,14 @@
+import sys
+input = sys.stdin.readline
+
 a, b = map(int, input().split())
+# a개 원소에서 b개 원소를 뽑는 조합의 총 경우의 수 구하기
+dp = [[0]*(b+1) for _ in range(a+1)]
 
-def comb(n, r):
-    if r == 0 or n == r:
-        return 1
-    return comb(n-1, r-1) + comb(n-1, r)
-
-# a나 b가 1일 경우 처리
-if a == 1 or b == 1:
-    print(1)
-else:
-    print(comb(a, b))
+for i in range(a+1):
+    for j in range(min(i, b)+1):
+        if i == j or j == 0:
+            dp[i][j] = 1
+        else:
+            dp[i][j] = dp[i-1][j-1] + dp[i-1][j]
+print(dp[a][b])
