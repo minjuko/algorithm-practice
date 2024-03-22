@@ -38,7 +38,7 @@ for i in range(n):
                 flag = 1
                 tmp = rank[j] # 현재 지원자 등수 갱신
 
-    # 우열을 가릴 수 없는 경우 같은 등수로 재설정정
+    # 우열을 가릴 수 없는 경우 같은 등수로 재설정
     if flag == 1:
         for j in range(n):
             if i != j and tmp < rank[j] and rank[j] <= rank[i]:
