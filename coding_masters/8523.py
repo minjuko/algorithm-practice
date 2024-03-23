@@ -2,22 +2,29 @@
 
 # 시작 숫자에 +1, -1, *2 연산을 반복하여 목표숫자에 도달하는 최소 횟수 구하기
 
-n, k = map(int, input().split()) # 목표 숫자, 시작 숫자
+from collections import deque
 
-if n <= k:
-    answer = k - n
-    print(answer)
-    exit()
-dp = [float('inf')] * (n + 1)
-dp[k] = 0
+n, k = map(int, input().split())
+q = deque()
+q.append((k, 0))  # (현재 숫자, 횟수)
+visited = set()
+visited.add(k)
 
-for i in range(k, n+1):
-    if dp[i] == float('inf'):
-        continue
-    if i+1 <= n:
-        dp[i+1] = min(dp[i+1], dp[i]+1)
-    if i*2 <= n:
-        dp[i*2] = min(dp[i*2], dp[i]+1)
-    if i-1 >= 0:
-        dp[i-1] = min(dp[i-1], dp[i]+1)
-print(dp[n])
+while q:
+    cur, cnt = q.popleft()
+
+    if cur == n:
+        print(cnt)
+        break
+
+    if cur * 2 <= n * 2 and cur * 2 not in visited:  # 2를 곱하는 경우
+        q.append((cur * 2, cnt + 1))
+        visited.add(cur * 2)
+
+    if cur + 1 <= n and cur + 1 not in visited:  # 1을 더하는 경우
+        q.append((cur + 1, cnt + 1))
+        visited.add(cur + 1)
+
+    if cur - 1 > 0 and cur - 1 not in visited:  # 1을 빼는 경우
+        q.append((cur - 1, cnt + 1))
+        visited.add(cur - 1)
