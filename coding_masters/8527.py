@@ -1,29 +1,77 @@
-# 리버스 게임
-# 앞면은 검은색, 뒷면은 흰색인 바둑돌
-# 한 번 뒤집을 때 해당 열이나 행의 모든 바둑돌 뒤집기
-# 바둑돌을 뒤집어 위에서 보이는 흰색 바둑돌 개수 최소 개수 구하기
+# 리버스라는 보드 게임이 있습니다.
+#
+# 게임 규칙은 이러합니다.
+#
+# 두 명이서 가위바위보를 하고,
+#
+# 이긴 사람은 바둑판에 앞면은 검은색, 뒷면은 흰색인 바둑들을 임의로 깔아놓습니다.
+#
+#
+#
+# 가위바위보에서 진 사람은 바둑돌을 뒤집을 수 있는데,
+#
+# 한번 뒤집을 때 해당 열이나 행의 모든 바둑돌을 뒤집어야 합니다.
+#
+#
+#
+# 예를 들어 3 X 3 형태로 바둑돌이 놓여져 있을 때 원하는 바둑돌 하나만 뒤집을 수는 없고,
+#
+# 특정한 열이나 행에 해당하는 바둑돌 3개를 모두 뒤집어야 합니다.
+#
+# 게임에서 이기기 위해서는 원하는 만큼 바둑돌을 뒤집어서 위에서 보이는 흰색 바둑돌의 개수가 최소가 되어야 합니다.
+#
+#
+#
+# 자연수 N이 주어지고, N X N 형태의 바둑돌들이 주어질 때
+#
+# 바둑돌을 뒤집는 사람이 만들 수 있는 위에서 보이는 흰색 바둑돌의 최소 개수를 출력하는 프로그램을 만드세요.
+#
+#
+# 예제 입력1
+#
+# 3
+# BBW
+# WBB
+# WBW
+#
+# 예제 출력1
+#
+# 2
+#
+# 예제 입력2
+#
+# 2
+# BW
+# WB
+#
+# 예제 출력2
+#
+# 0
+#
+#
+# 입력값 설명
+#
+# 첫째 줄에 자연수 N이 주어집니다. (1 ≤ N ≤ 10)
+#
+# 둘째 줄부터 N개의 줄에 걸쳐 바둑돌들의 상태가 길이가 N인 문자열로 주어집니다.
+#
+# i번째 문자열의 j번째 문자가
+# 'B'인 경우 i행 j열의 바둑돌의 윗면이 검은색이고,
+# 'W'인 경우 윗면이 흰색이라는 의미입니다.
+#
+# 출력값 설명
+#
+# 한 행 또는 한 열에 놓인 N개의 바둑돌을 모두 뒤집는 작업들을 무한정 수행할 수 있다고 했을 때,
+# 윗면이 흰색이 되는 바둑돌의 최소 개수를 출력합니다.
 
-def min_flipped_white(dots, n):
-    min_white_count = float('inf')
+n = int(input())
+board = [input() for _ in range(n)]
 
-    for row in range(n):
-        white_count = dots[row].count('W')  # 해당 행의 흰색 바둑돌 개수를 세기
-        min_white_count = min(min_white_count, white_count)
+def min_white():
+    cnt = 0
+    for i in range(n):
+        cnt += min(board[i].count('W'), board[i].count('B'))
+    return cnt
 
-    for col in range(n):
-        white_count = sum(1 for row in dots if row[col] == 'W')  # 해당 열의 흰색 바둑돌 개수를 세기
-        min_white_count = min(min_white_count, white_count)
+print(min_white())
 
-    return min_white_count
-
-
-n = int(input())  # 바둑판의 크기 N을 입력받습니다.
-
-# 바둑돌의 상태
-dots = []
-for _ in range(n):
-    row = input()
-    dots.append(row)
-
-result = min_flipped_white(dots, n)
-print(result)
