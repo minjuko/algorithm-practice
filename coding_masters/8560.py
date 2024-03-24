@@ -1,41 +1,79 @@
 # 탈출 사건
 
+# 빈동은 동물원의 안전 책임자입니다.
+#
+# 동물원은 N행 M열의 격자, 총 N × M 칸으로 나눌 수 있습니다.
+#
+#
+#
+# 어느 날 재규어들이 우리에서 탈출했습니다.
+#
+# 이 재규어들은 매우 공격적이라 당장 포획할 수 없습니다.
+#
+# 빈동은 입장객들에게 대피하라고 알린 뒤, 날뛰는 재규어를 막을 방법을 찾아냈습니다.
+#
+#
+#
+# 동물원은 빈 칸, 재규어가 있는 칸, 울타리가 있는 칸으로 구분할 수 있습니다.
+#
+# 재규어들은 상하좌우 중 한 방향으로 인접한 빈 칸으로 이동할 수 있으며, 동물원 밖으로 나가지 못합니다.
+#
+#
+#
+# 빈동의 목표는 3개의 여분 울타리를  모두 설치해, 재규어가 도달할 수 없는 칸의 수를 최대화 하는 것입니다.
+#
+# 여분 울타리는 빈 칸에만 설치할 수 있고, 설치하면 그 칸은 울타리가 있는 칸이 됩니다.
+#
+#
+#
+# 빈동이 목표를 달성했을 때,
+#
+# 재규어가 도달할 수 없는 빈 칸의 수를 출력하는 프로그램을 작성하세요.
+
+# 입력1
+# 4 4
+# 0 1 0 0
+# 1 0 2 0
+# 0 1 0 0
+# 0 0 1 1
+
+# 출력1
+# 6
 n, m = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(n)]
-# 0: 빈칸, 1: 울타리, 2: 재규어
 
-# 상하좌우 이동
-# 3개의 여분 울타리를 설치해 재규어가 도달할 수 없는 칸 수 최대화
-# 여분 울타리는 빈 칸에만 설치 가능 (설치 시 울타리 칸)
-# 재규어는 상하좌우 인접한 칸 이동
-# 재규어가 도달할 수 벗는 빈 칸 수 출력
-
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
-
-def bfs(graph):
-    n = len(graph)
-    dp = [[float('inf')] * n for _ in range(n)]
-    dp[0][0] = graph[0][0]
-
+def bfs():
+    global graph
+    queue = []
     for i in range(n):
-        for j in range(n):
-            for k in range(4):
-                nx, ny = i + dx[k], j + dy[k]
-                if 0 <= nx < n and 0 <= ny < n:
-                    dp[nx][ny] = min(dp[nx][ny], dp[i][j] + graph[nx][ny])
+        for j in range(m):
+            if graph[i][j] == 2:
+                queue.append((i, j))
+    while queue:
+        x, y = queue.pop(0)
+        for dx, dy in (0, 1), (0, -1), (1, 0), (-1, 0):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < n and 0 <= ny < m and graph[nx][ny] == 0:
+                graph[nx][ny] = 2
+                queue.append((nx, ny))
 
-    return dp[n - 1][n - 1]
-
-def solution(n, m, graph):
-    answer = 0
+def dfs(cnt):
+    global graph
+    if cnt == 3:
+        bfs()
+        result = 0
+        for i in range(n):
+            for j in range(m):
+                if graph[i][j] == 0:
+                    result += 1
+        return result
+    result = 0
     for i in range(n):
         for j in range(m):
             if graph[i][j] == 0:
                 graph[i][j] = 1
-                answer = max(answer, bfs(graph))
+                result = max(result, dfs(cnt + 1))
                 graph[i][j] = 0
+    return result
 
-    return answer
-
-print(solution(n, m, graph))
+print(dfs(0))
