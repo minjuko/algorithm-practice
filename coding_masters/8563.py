@@ -1,29 +1,33 @@
-# 영화제
+#  영화제
 
-def can_defeat(score1, score2):
-    return score1[0] >= score2[0] and score1[1] >= score2[1] and score1[2] >= score2[2]
+n = int(input())
+points = [list(map(int, input().split())) for _ in range(n)]
+graph = [[] for _ in range(n)]
+visit = [-1 for _ in range(n)]
+answer = 0
 
+def dfs(x):
+    for i in graph[x]:
+        if flag[i]:
+            continue
+        flag[i] = 1
+        if visit[i] == -1 or dfs(visit[i]):
+            visit[i] = x
+            return True
+    return False
 
-def find_max_independent_set(scores):
-    n = len(scores)
-    defeated = [0] * n
+for i in range(n-1):
+    for j in range(i+1, n):
+        if points[i][0] >= points[j][0] and points[i][1] >= points[j][1] and points[i][2] >= points[j][2]:
+            graph[i].append(j)
+        elif points[i][0] <= points[j][0] and points[i][1] <= points[j][1] and points[i][2] <= points[j][2]:
+            graph[j].append(i)
 
-    for i in range(n):
-        for j in range(n):
-            if i != j and can_defeat(scores[i], scores[j]):
-                defeated[j] += 1
-
-    independent_set = []
-    for i in range(n):
-        if defeated[i] <= 2:
-            independent_set.append(i)
-
-    return len(independent_set)
-
-
-N = int(input())
-scores = []
-for _ in range(N):
-    scores.append(list(map(int, input().split())))
-
-print(find_max_independent_set(scores))
+for i in range(n):
+    flag = [0 for _ in range(n)]
+    if dfs(i):
+        answer += 1
+    flag = [0 for _ in range(n)]
+    if dfs(i):
+        answer += 1
+print(n - answer)
