@@ -1,65 +1,36 @@
 # 슬라이딩 퍼즐
+def move(board, x, y, nx, ny):
+    new_board = [row[:] for row in board]
+    new_board[x][y], new_board[nx][ny] = new_board[nx][ny], new_board[x][y]
+    return new_board
 
-import sys
-import copy
-
-def dfs(board, N, x, y, visited, tmp):
+def dfs(board, n, x, y, visited, tmp):
     global answer
     if board == answer: return 0
-    key = id(board)
+    key = ''.join(''.join(row) for row in board)
 
     if key in visited:
-        visited[key] = tmp if visited[key] > tmp else visited[key]
+        visited[key] = min(visited[key], tmp)
     else:
         visited[key] = tmp
 
+    moves = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     k = -1
-    if x > 0:
-        new = copy.deepcopy(board)
-        new[x][y], new[x - 1][y] = new[x - 1][y], new[x][y]
-        key = id(new)
-        if not key in visited or visited[key] > tmp:
-            new_k = dfs(new, N, x - 1, y, visited, tmp + 1)
-            if new_k >= 0:
-                k = new_k + 1 if new_k + 1 < k or k < 0 else k
-
-    if x < N - 1:
-        new = copy.deepcopy(board)
-        new[x][y], new[x + 1][y] = new[x + 1][y], new[x][y]
-        key = id(new)
-        if not key in visited or visited[key] > tmp:
-            new_k = dfs(new, N, x + 1, y, visited, tmp + 1)
-            if new_k >= 0:
-                k = new_k + 1 if new_k + 1 < k or k < 0 else k
-    if y > 0:
-        new = copy.deepcopy(board)
-        new[x][y], new[x][y - 1] = new[x][y - 1], new[x][y]
-        key = id(new)
-        if not key in visited or visited[key] > tmp:
-            new_k = dfs(new, N, x, y - 1, visited, tmp + 1)
-            if new_k >= 0:
-                k = new_k + 1 if new_k + 1 < k or k < 0 else k
-
-    if y < N - 1:
-        new = copy.deepcopy(board)
-        new[x][y], new[x][y + 1] = new[x][y + 1], new[x][y]
-        key = id(new)
-        if not key in visited or visited[key] > tmp:
-            new_k = dfs(new, N, x, y + 1, visited, tmp + 1)
-            if new_k >= 0:
-                k = new_k + 1 if new_k + 1 < k or k < 0 else k
+    for dx, dy in moves:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < n and 0 <= ny < n:
+            new_board = move(board, x, y, nx, ny)
+            new_key = ''.join(''.join(row) for row in new_board)
+            if new_key not in visited or visited[new_key] > tmp:
+                new_k = dfs(new_board, n, nx, ny, visited, tmp + 1)
+                if new_k >= 0:
+                    k = new_k + 1 if k == -1 else min(k, new_k + 1)
     return k
 
-graph = list(map(lambda x: list(x.strip()), sys.stdin.readlines()))
+graph = [list(input().strip()) for _ in range(2)]
 n = len(graph)
-answer = list(map(lambda x: list(map(str, range(x * n + 1, x * n + 1 + n))), range(n)))
+answer = [list(map(str, range(x * n + 1, x * n + 1 + n))) for x in range(n)]
 answer[-1][-1] = "X"
-id = lambda x: ''.join(list(map(lambda k: ''.join(k), x)))
 
-x, y = -1, -1
-for i in range(n):
-    if 'X' in graph[i]:
-        x, y = i, graph[i].index('X')
-        break
-
+x, y = next((i, j) for i in range(n) for j in range(n) if graph[i][j] == 'X')
 print(dfs(graph, n, x, y, {}, 0))

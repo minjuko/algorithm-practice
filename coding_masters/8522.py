@@ -1,37 +1,30 @@
-from queue import PriorityQueue
-import sys
-input = sys.stdin.readline
+# 먹보 수민이
 
-n = int(input())  # 편의점 수
-info = [list(map(int, input().split())) for _ in range(n)]  # 거리, 포만감
-d, p = map(int, input().split())  # 포만감, 목적지 거리
-info.sort(key=lambda x: x[0])  # 거리순으로 정렬
+n = int(input())
+info = []
+for _ in range(n):
+    a, b = map(int, input().split()) # 거리, 포만감
+    info.append((a, b))
+d, p = map(int, input().split())
+visit = [0]*d
 
-queue = PriorityQueue()
-cur = answer = 0
+for idx, [a, b] in enumerate(info):
+    if d <= a+b:
+        b = max(0, d-a)
+    info[idx] = [a, b]
+info.sort(key=lambda x: (-x[1], x[0]))
 
-while p and cur != d:
-    cur += 1
-    p -= 1
-
-    while info:
-        next_d, next_p = info[0]
-        if next_d == cur:
-            queue.put([-next_p, next_d])
-            info.pop(0)
-            if info and info[0][0] == next_d:
-                continue
+answer = 0
+for a, b in info:
+    if visit.count(0) <= p:
         break
+    for i in range(b+1):
+        if d > a+i:
+            visit[a+i] = 1
+    answer += 1
 
-    if d == cur:
-        print(answer)
-        exit()
-
-    if not p and not queue.empty():
-        satis, dist = queue.get()
-        satis = -satis
-        answer += 1
-        p += satis
-
-print(-1 if queue.empty() else answer)
+if visit.count(0) > p:
+    print(-1)
+else:
+    print(answer)
 
