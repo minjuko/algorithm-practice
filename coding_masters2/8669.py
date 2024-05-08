@@ -26,16 +26,3 @@ def dfs(v):
 
 dfs(1) # 1번 정점부터 시작
 
-
-
-
-
-def dfs(v):
-    visited[v] = True
-    print(v, end=" ")
-    for i in graph[v]:
-        if not visited[i]:
-            dfs(i)
-
-dfs(1)
-
