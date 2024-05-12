@@ -5,28 +5,18 @@
 n, k = map(int, input().split()) # 물건 수, 가방 수
 
 # 물건 정보 (무게, 가격)
-items = []
-for _ in range(n):
-    m, v = map(int, input().split())
-    items.append((m, v))
+items = [list(map(int, input().split())) for _ in range(n)] # 물건 정보
+bags = [int(input()) for _ in range(k)] # 가방 정보
+answer = 0
 
-# 가방 정보 (무게 제한)
-bags =[int(input()) for _ in range(k)]
-
-# 무게 제한 오름차순 정렬
+items.sort(key=lambda x: x[1], reverse=True)
 bags.sort()
 
-# dp[i][j]: i번째 물건까지 고려하여 j무게 제한일 때 가격의 최댓값
-dp = [[0] * (bags[-1] + 1) for _ in range(n + 1)]
-
-for i in range(1, n + 1):
-    for j in range(1, bags[-1] + 1):
-        # 물건을 담을 수 없는 경우
-        if items[i - 1][0] > j:
-            dp[i][j] = dp[i - 1][j]
-        # 물건을 담을 수 있는 경우
-        else:
-            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - items[i - 1][0]] + items[i - 1][1])
-
-print(dp[n][bags[-1]]) # 최댓값 출력
-
+for i in range(n):
+    if bags:
+        for j in bags:
+            if items[i][0] <= j:
+                answer += items[i][1]
+                bags.remove(j)
+                break
+print(answer)
