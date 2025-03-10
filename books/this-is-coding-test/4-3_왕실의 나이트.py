@@ -11,12 +11,13 @@ result = 0
 # 이동 가능한 방향 정의 (8개)
 steps = [(-2, -1), (-1, -2), (1, -2), (2, -1), (2, 1), (1, 2), (-1, 2), (-2, 1)]
 
-# 각 방향으로 이동 가능한 지 확인
+# 각 방향으로 이동 가능한지 확인
 for step in steps:
     next_row = row + step[0]
     next_col = col + step[1]
 
-    if next_row >= 1 and next_row <= 8 and next_col >= 1 and next_col <= 8:
+    # 범위 충족하는지 확인
+    if 1 <= next_row <= 8 and 1 <= next_col <= 8:
         result += 1
 
 print(result)
