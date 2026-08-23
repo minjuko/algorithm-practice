@@ -1,5 +1,4 @@
 from itertools import combinations
-
 def solution(numbers):
     result = set()
     cases = list(combinations(numbers, 2))
